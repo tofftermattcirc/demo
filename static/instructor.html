@@ -1,0 +1,85 @@
+<html>
+	<body>
+		<select id="exercise">
+			<option>Windows Exercise</option>
+			<option>Impossible Exercise</option>
+			<option>Here Be Dragons!</option>
+		</select>
+		<br/><br/>
+		&nbsp;Time Limit:&nbsp;<input type="number" id="time_limit" value="20" style="width:60px"></input>&nbsp;&nbsp;minutes
+		<br/><br/>
+		<button onclick="startButton()">Start</button>
+		<br/><br/>
+		<div id="exercise_is_live" hidden>
+			<b>Trainee Link:</b>&nbsp;&nbsp;<span id="trainee_link"></span>&nbsp;&nbsp;<img src="http://localhost/img/copy.png" height="16px" width="16px" onclick="copy()"/>
+			<br/>
+			<b>Time Remaining:</b>&nbsp;&nbsp;<span id="time_remaining"></div>
+		</div>
+		<div id="hbd"></div>
+	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+		
+		});
+	
+		function startButton() {
+			if ($('#exercise').val() == 'Here Be Dragons!') {
+				$('#exercise_is_live').hide();
+				$('#hbd').html("<img src=\"http://fc08.deviantart.net/fs71/i/2010/202/1/6/Here_Be_Dragons_by_Lord_Psymon.jpg\"/>");
+			}
+			else {
+				$('#hbd').empty();
+				$('#exercise_is_live').show();
+				$('#trainee_link').text("http://localhost/trainee");
+				createCountdownTimer();
+			};
+		};
+		
+		var endTime = undefined;
+		var timer = undefined;
+		function createCountdownTimer() {
+			var timeLimit = $('#time_limit').val();
+			endTime = new Date(Date.now() + (timeLimit * 60 * 1000)).getTime();
+
+			if (!timer) {
+				var timer = setInterval(function() {
+					var distance = endTime - Date.now();
+					var countDownText;
+					if (distance > 0) {
+						// Time calculations for minutes and seconds
+						var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+						var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+						if (seconds < 10 && minutes >= 1) {
+							seconds = "0" + seconds;
+						}
+						
+						if (minutes >= 1) {
+							countDownText = minutes + ":" + seconds + " minutes";
+						}
+						else if (seconds > 1){
+							countDownText = seconds + " seconds";
+						}
+						else {
+							countDownText = seconds + " second";
+						}
+					}
+					else {
+						clearInterval(timer);
+						timer = undefined;
+						countDownText = "EXPIRED";
+					}
+					$('#time_remaining').text(countDownText);
+				}, 1500);
+			};
+		};
+		
+		function copy() {
+			var $temp = $("<input>");
+			$("body").append($temp);
+			$temp.val($('#trainee_link').text()).select();
+			document.execCommand("copy");
+			$temp.remove();
+		};
+	</script>
+</html>
