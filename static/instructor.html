@@ -1,33 +1,38 @@
 <html>
+	<head>
+		<link rel="stylesheet" href="css/zen_style.css">
+	</head>
 	<body>
-		<table>
-			<tr>
-				<td>
-					<select id="exercise">
-						<option>Windows Exercise</option>
-						<option>Impossible Exercise</option>
-						<option>Here Be Dragons!</option>
-					</select>
-					<br/><br/>
-					&nbsp;Time Limit:&nbsp;<input type="number" id="time_limit" value="20" style="width:60px"></input>&nbsp;&nbsp;minutes
-					<br/><br/>
-					<button onclick="startButton()">Start</button>
-				</td>
-				<td style="padding:30px;">
-					Running Exercises:<br/>
-					<select id="running_exercises" style="width:150px;" multiple></select>
-					<div id="exercise_is_live" hidden="true">
-						<b>Trainee Link:</b>&nbsp;&nbsp;<span id="trainee_link"></span>&nbsp;&nbsp;<img src="img/copy.png" height="16px" width="16px" onclick="copyUrl()"/>
-						<br/>
-						<b>Time Remaining:</b>&nbsp;&nbsp;<span id="time_remaining"></span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><div id="hbd"></div></td>
-			</tr>
-		</table>
+		<div class="page-wrapper">
+			<table>
+				<tr>
+					<td>
+						<select id="exercise">
+							<option>Windows Exercise</option>
+							<option>Impossible Exercise</option>
+							<option>Here Be Dragons!</option>
+						</select>
+						<br/><br/>
+						&nbsp;Time Limit:&nbsp;<input type="number" id="time_limit" value="20" style="width:60px"></input>&nbsp;&nbsp;minutes
+						<br/><br/>
+						<button onclick="startButton()">Start</button>
+					</td>
+					<td style="padding:30px;">
+						Running Exercises:<br/>
+						<select id="running_exercises" style="width:150px;" multiple></select>
+						<div id="exercise_is_live" hidden="true">
+							<b>Trainee Link:</b>&nbsp;&nbsp;<span id="trainee_link"></span>&nbsp;&nbsp;<img src="img/copy.png" height="16px" width="16px" onclick="copyUrl()"/>
+							<br/>
+							<b>Time Remaining:</b>&nbsp;&nbsp;<span id="time_remaining"></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><div id="hbd"></div></td>
+				</tr>
+			</table>
+		</div>
 	</body>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="js/util.js"></script>
@@ -109,7 +114,7 @@
 					select.append($("<option />").val(id).text(id + " - " + text));
 				}
 			}).fail(function() {
-				alert("Failed to get currently running exercises.");
+				//alert("Failed to get currently running exercises.");
 			});
 		}
 	</script>
