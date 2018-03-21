@@ -4,19 +4,96 @@
 	</head>
 	<body>
 		<div>
-			<div style="position:fixed;left:0;top:0">
+			<div style="position:fixed;left:0;top:0" id="frame_div">
 				<iframe src="http://34.217.107.92:8080/guacamole/#/" width="1280" height="1024"></iframe>
 			</div>
 			<div class="page-wrapper" style="position:fixed;left:1300;top:0;height:1024">
-				<section class="intro" id="zen-intro">
+				<section class="intro">
 					<header class="banner"></header>
-					<div class="requirements supporting" id="zen-requirements" role="article">
+					<div class="requirements supporting">
 						<img src="img/redticket/hdReq.gif"></img>
 						<p>1. Log in with username "trainee" and password.</p>
 						<p>2. Double click on Windows.</p>
 					</div>
+					<div style="height:100px;"></div>
+					<div style="padding:40px">
+						<button id="start_button" onclick="start()">Start</button>
+					</div>
+					<span id="time_remaining_div" style="padding:40px">
+						Time Remaining: <span id="time_remaining"></span>
+					</span>
 				</section>
 			</div>
 		</div>
 	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/util.js"></script>
+	<script>
+		var id;
+		$(document).ready(function() {
+			// Get the exercise id from the url
+			id = getUrlParameter("id");
+
+			// Get the exercise's end time using the exercise id
+			$.ajax ({
+				type: "GET",
+				url: "http://localhost:8080/zmq/passthrough/exercise_timeout/" + id,
+			}).done(function(response) {
+				var endTime = response["endTime"];
+				if (endTime != -1) {
+					$('#start_button').hide();
+					$('#time_remaining_div').show();
+					if (endTime - Date.now() < 0) {
+						// The exercise has expired
+						// Hide the iframe
+						$("#frame_div").html('');
+						// Show an alert
+						alert("Time's up!");
+						// Write expired for the time
+						$('#time_remaining').text("EXPIRED");
+					}
+					else {
+						// Exercise is running, start the count-down timer
+						createCountdownTimer(endTime, $('#time_remaining'), $("#frame_div"));
+					}
+				}
+				else {
+					$('#start_button').show();
+					$('#time_remaining_div').hide();
+				}
+			}).fail(function() {
+				alert("Failed to get currently running exercises.");
+			});
+		});
+		
+		function start() {
+			// Hide the button to prevent multiple presses
+			$('#start_button').hide();
+			$.ajax ({
+				type: "POST",
+				url: "http://localhost:8080/zmq/passthrough/start_exercise/" + id,
+			}).done(function(response) {
+				var endTime = response["endTime"];
+				$('#start_button').hide();
+				$('#time_remaining_div').show();
+				if (endTime - Date.now() < 0) {
+					// The exercise has expired
+					// Hide the iframe
+					$("#frame_div").html('');
+					// Show an alert
+					alert("Time's up!");
+					// Write expired for the time
+					$('#time_remaining').text("EXPIRED");
+				}
+				else {
+					// Exercise is running, start the count-down timer
+					createCountdownTimer(endTime, $('#time_remaining'), $("#frame_div"));
+				}
+			}).fail(function() {
+				// On failure, show the start button again and alert the user
+				$('#start_button').show();
+				alert("Failed to start exercises.");
+			});
+		}
+	</script>
 </html>
