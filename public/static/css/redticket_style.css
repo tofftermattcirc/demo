@@ -1,7 +1,7 @@
 body { 
 	font: 11px/18px verdana,arial,helvetica,sans-serif; 
 	color: #512720; 
-	background: #512720 url(../img/redticket/bodyBg.gif); 
+	background: #512720 url(/static/img/redticket/bodyBg.gif); 
     background-repeat: repeat;
     background-attachment: fixed;
     background-position: center top; 
@@ -11,7 +11,7 @@ body {
 }		
 .page-wrapper {
 	width: 765px;
-	background: url(../img/redticket/mainBg.gif); 
+	background: url(/static/img/redticket/mainBg.gif); 
     background-repeat: repeat;
 	margin: 0 0;
 	padding: 0 ;
@@ -20,7 +20,7 @@ body {
 .banner {
 	width: 765px;
 	height: 343px;
-	background: url(../img/redticket/headerBg.jpg); 
+	background: url(/static/img/redticket/headerBg.jpg); 
     background-repeat: no-repeat;
 }
 .preamble, .supporting {

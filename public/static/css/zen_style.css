@@ -30,14 +30,14 @@ body {
 	font: 75% georgia, sans-serif;
 	line-height: 1.88889;
 	color: #555753; 
-	background: #fff url(/img/zen/blossoms.jpg) no-repeat bottom right; 
+	background: #fff url(/static/img/zen/blossoms.jpg) no-repeat bottom right; 
 	margin: 0; 
 	padding: 0;
 	}
 	
 /* specific divs */
 .page-wrapper { 
-	background: url(/img/zen/zen-bg.jpg) no-repeat top left; 
+	background: url(/static/img/zen/zen-bg.jpg) no-repeat top left; 
 	padding: 0 175px 0 110px;  
 	margin: 0; 
 	position: relative;

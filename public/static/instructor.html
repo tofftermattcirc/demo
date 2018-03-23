@@ -45,12 +45,14 @@
 				var id = this.value;
 				$.ajax ({
 					type: "GET",
-					url: "http://localhost:8080/zmq/passthrough/exercise_timeout/" + id,
+					url: server_url + "/exercises/" + id,
 				}).done(function(response) {
-					var endTime = response["endTime"];
-					createCountdownTimer(endTime, $('#time_remaining'), null);
-					$('#trainee_link').text("http://localhost:8080/trainee.html?id=" + id);
-					$('#exercise_is_live').show();
+					if (response) {
+						var due = response["due"];
+						createCountdownTimer(due, $('#time_remaining'), null);
+						$('#trainee_link').text(server_url + "/static/trainee.html?id=" + id);
+						$('#exercise_is_live').show();
+					}
 				}).fail(function() {
 					alert("Failed to create exercise.");
 				});
@@ -66,28 +68,19 @@
 			else {
 				$('#hbd').empty();
 
-				//var timeLimit = $('#time_limit').val();
-				//endTime = new Date(Date.now() + (timeLimit * 60 * 1000)).getTime();
-				submitExerciseRequest(endTime);
+				submitExerciseRequest();
 			};
 		};
 		
-		function copyUrl() {
-			var $temp = $("<input>");
-			$("body").append($temp);
-			$temp.val($('#trainee_link').text()).select();
-			document.execCommand("copy");
-			$temp.remove();
-		};
-		
 		// Request a new exercise. Will repopulate running exercises is successful
-		function submitExerciseRequest(endTime) {
+		function submitExerciseRequest() {
 			var timeToComplete = $('#time_limit').val();
 			$.ajax ({
 				type: "POST",
-				url: "http://localhost:8080/zmq/passthrough/exercise_timeout/" + timeToComplete,
+				url: server_url + "/exercises",
+				data: JSON.stringify({ "name": "Newise", "delta": timeToComplete.toString() }),
+				contentType: "application/json",
 			}).done(function(response) {
-				var id = response["id"];
 				populateRunningExercises();
 			}).fail(function() {
 				alert("Failed to create exercise.");
@@ -100,22 +93,38 @@
 		function populateRunningExercises() {
 			$.ajax ({
 				type: "GET",
-				url: "http://localhost:8080/zmq/passthrough/exercise_timeout",
+				url: server_url + "/exercises",
 			}).done(function(response) {
 				var select = $("#running_exercises");
 				select.empty();
-				var exercises = response["exercises"];
-				for (var i = 0; i < exercises.length; ++i) {
-					var id = exercises[i]["id"];
-					var text = "Started";
-					if (exercises[i]["endTime"] == -1) {
-						text = "Not Started";
+				if (response) {
+					for (var i = 0; i < reponse.length; ++i) {
+						var id = reponse[i]["id"];
+						var name = reponse[i]["name"];
+						var text = "Not Started";
+						if (reponse[i]["started"])
+						{
+							if (reponse[i]["due"] - Date.now() <= 0) {
+								text = "EXPIRED";
+							}
+							else {
+								text = "Started";
+							}
+						}
+						select.append($("<option />").val(id).text(name + " - " + text));
 					}
-					select.append($("<option />").val(id).text(id + " - " + text));
 				}
 			}).fail(function() {
 				//alert("Failed to get currently running exercises.");
 			});
 		}
+		
+		function copyUrl() {
+			var $temp = $("<input>");
+			$("body").append($temp);
+			$temp.val($('#trainee_link').text()).select();
+			document.execCommand("copy");
+			$temp.remove();
+		};
 	</script>
 </html>

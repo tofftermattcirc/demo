@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="css/redticket_style.css">
+		<link rel="stylesheet" href="/css/redticket_style.css">
 	</head>
 	<body>
 		<div>
@@ -37,46 +37,22 @@
 			// Get the exercise's end time using the exercise id
 			$.ajax ({
 				type: "GET",
-				url: "http://localhost:8080/zmq/passthrough/exercise_timeout/" + id,
+				url: server_url + "/exercise_timeout/" + id,
 			}).done(function(response) {
-				var endTime = response["endTime"];
-				if (endTime != -1) {
-					$('#start_button').hide();
-					$('#time_remaining_div').show();
-					if (endTime - Date.now() < 0) {
-						// The exercise has expired
-						// Hide the iframe
-						$("#frame_div").html('');
-						// Show an alert
-						alert("Time's up!");
-						// Write expired for the time
-						$('#time_remaining').text("EXPIRED");
-					}
-					else {
-						// Exercise is running, start the count-down timer
-						createCountdownTimer(endTime, $('#time_remaining'), $("#frame_div"));
-					}
-				}
-				else {
-					$('#start_button').show();
-					$('#time_remaining_div').hide();
+				if (response) {
+					handleStartExercise(response);
 				}
 			}).fail(function() {
 				alert("Failed to get currently running exercises.");
 			});
 		});
 		
-		function start() {
-			// Hide the button to prevent multiple presses
-			$('#start_button').hide();
-			$.ajax ({
-				type: "POST",
-				url: "http://localhost:8080/zmq/passthrough/start_exercise/" + id,
-			}).done(function(response) {
-				var endTime = response["endTime"];
+		function handleStartExercise(response) {
+			if (response["started"]) {
 				$('#start_button').hide();
 				$('#time_remaining_div').show();
-				if (endTime - Date.now() < 0) {
+				var due = response["due"];
+				if (due - Date.now() <= 0) {
 					// The exercise has expired
 					// Hide the iframe
 					$("#frame_div").html('');
@@ -87,8 +63,39 @@
 				}
 				else {
 					// Exercise is running, start the count-down timer
-					createCountdownTimer(endTime, $('#time_remaining'), $("#frame_div"));
+					createCountdownTimer(due, $('#time_remaining'), $("#frame_div"));
 				}
+			}
+			else { // Exercise has not started yet
+				$('#start_button').show();
+				$('#time_remaining_div').hide();
+			}
+		}
+
+		function start() {
+			// Hide the button to prevent multiple presses
+			$('#start_button').hide();
+			$.ajax ({
+				type: "POST",
+				url: server_url + "/start_exercise/" + id,
+			}).done(function(response) {
+				handleStartExercise(response);
+				/*var due = response["due"];
+				$('#start_button').hide();
+				$('#time_remaining_div').show();
+				if (due - Date.now() < 0) {
+					// The exercise has expired
+					// Hide the iframe
+					$("#frame_div").html('');
+					// Show an alert
+					alert("Time's up!");
+					// Write expired for the time
+					$('#time_remaining').text("EXPIRED");
+				}
+				else {
+					// Exercise is running, start the count-down timer
+					createCountdownTimer(due, $('#time_remaining'), $("#frame_div"));
+				}*/
 			}).fail(function() {
 				// On failure, show the start button again and alert the user
 				$('#start_button').show();
