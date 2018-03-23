@@ -6,30 +6,30 @@ import (
 
 var currentId int
 
-var excercises Excercises
+var exercises Exercises
 
-func RepoGetExcercise(id int) Excercise {
-	for _, ex := range excercises {
+func RepoGetExercise(id int) Exercise {
+	for _, ex := range exercises {
 		if ex.Id == id {
 			return ex
 		}
 	}
-	// return empty Excercise if not found
-	return Excercise{}
+	// return empty Exercise if not found
+	return Exercise{}
 }
 
 //No Lock on repo : TODO: Add Lock
-func RepoAddExcercise(ex Excercise) Excercise {
+func RepoAddExercise(ex Exercise) Exercise {
 	currentId += 1
 	ex.Id = currentId
-	excercises = append(excercises, ex)
+	exercises = append(exercises, ex)
 	return ex
 }
 
-func RepoDeleteExcercise(id int) error {
-	for i, ex := range excercises {
+func RepoDeleteExercise(id int) error {
+	for i, ex := range exercises {
 		if ex.Id == id {
-			excercises = append(excercises[:i], excercises[i+1:]...)
+			exercises = append(exercises[:i], exercises[i+1:]...)
 			return nil
 		}
 	}

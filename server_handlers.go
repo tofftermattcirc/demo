@@ -5,28 +5,29 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
 
-/** GET /excercises */
-func GetExcercises(w http.ResponseWriter, r *http.Request) {
+/** GET /exercises */
+func GetExercises(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(excercises); err != nil {
+	if err := json.NewEncoder(w).Encode(exercises); err != nil {
 		panic(err)
 	}
 }
 
-/** GET /excercise/{id} */
-func GetExcercise(w http.ResponseWriter, r *http.Request) {
+/** GET /exercise/{id} */
+func GetExercise(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	var excerciseId int
+	var exerciseId int
 	var err error
-	if excerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
 		panic(err)
 	}
-	exc := RepoGetExcercise(excerciseId)
+	exc := RepoGetExercise(exerciseId)
 	if exc.Id > 0 {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)
@@ -42,17 +43,16 @@ func GetExcercise(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
 		panic(err)
 	}
-
 }
 
 /*
 Test with this curl command:
 
-curl -H "Content-Type: application/json" -d '{"name":"New Excercise"}' http://localhost:8080/excercises
+curl -H "Content-Type: application/json" -d '{"name":"New Exercise"}' http://localhost:8080/exercises
 
 */
-func AddExcercise(w http.ResponseWriter, r *http.Request) {
-	var exc Excercise
+func AddExercise(w http.ResponseWriter, r *http.Request) {
+	var exc Exercise
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -68,10 +68,41 @@ func AddExcercise(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	e := RepoAddExcercise(exc)
+	e := RepoAddExercise(exc)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(e); err != nil {
+		panic(err)
+	}
+}
+
+func StartExercise(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var exerciseId int
+	var err error
+	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+		panic(err)
+	}
+	exc := RepoGetExercise(exerciseId)
+	if exc.Id > 0 {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		if !exc.IsStarted {
+			exc.IsStarted = true;
+			exc.Due = time.Now().Local().Add(time.Duration(exc.Delta) * time.Minute);
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(exc); err != nil {
+			panic(err)
+		}
+		return
+	}
+
+	// If we didn't find it, 404
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusNotFound)
+	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
 		panic(err)
 	}
 }

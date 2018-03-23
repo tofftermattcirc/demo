@@ -15,19 +15,25 @@ var routes = Routes{
 	Route{
 		"GetExcercises",
 		"GET",
-		"/excercises",
-		GetExcercises,
+		"/exercises",
+		GetExercises,
 	},
 	Route{
 		"AddExcercise",
 		"POST",
-		"/excercises",
-		AddExcercise,
+		"/exercises",
+		AddExercise,
 	},
 	Route{
 		"GetExcercise",
 		"GET",
-		"/excercises/{id}",
-		GetExcercise,
+		"/exercises/{id}",
+		GetExercise,
+	},
+	Route{
+		"StartExercise",
+		"POST",
+		"/exercises/start/{id}",
+		StartExercise,
 	},
 }

@@ -78,7 +78,7 @@
 			$.ajax ({
 				type: "POST",
 				url: server_url + "/exercises",
-				data: JSON.stringify({ "name": "Newise", "delta": timeToComplete.toString() }),
+				data: JSON.stringify({ "name": "New Exercise", "delta": timeToComplete }),
 				contentType: "application/json",
 			}).done(function(response) {
 				populateRunningExercises();
