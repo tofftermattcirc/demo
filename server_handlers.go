@@ -24,7 +24,7 @@ func GetExercise(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var exerciseId int
 	var err error
-	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+	if exerciseId, err = strconv.Atoi(vars["id"]); err != nil {
 		panic(err)
 	}
 	exc := RepoGetExercise(exerciseId)
@@ -60,8 +60,9 @@ func AddExercise(w http.ResponseWriter, r *http.Request) {
 	if err := r.Body.Close(); err != nil {
 		panic(err)
 	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	if err := json.Unmarshal(body, &exc); err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(422) // unprocessable entity
 		if err := json.NewEncoder(w).Encode(err); err != nil {
 			panic(err)
@@ -69,7 +70,6 @@ func AddExercise(w http.ResponseWriter, r *http.Request) {
 	}
 
 	e := RepoAddExercise(exc)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		panic(err)
@@ -80,7 +80,7 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var exerciseId int
 	var err error
-	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+	if exerciseId, err = strconv.Atoi(vars["id"]); err != nil {
 		panic(err)
 	}
 	exc := RepoGetExercise(exerciseId)
@@ -88,7 +88,9 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		if !exc.IsStarted {
 			exc.IsStarted = true;
-			exc.Due = time.Now().Local().Add(time.Duration(exc.Delta) * time.Minute);
+			var due = time.Now().Local().Add(time.Duration(exc.Delta) * time.Minute)
+			exc.Due = due.UnixNano() / int64(time.Millisecond)
+			RepoUpdateExercise(exc)
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")

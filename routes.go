@@ -33,7 +33,7 @@ var routes = Routes{
 	Route{
 		"StartExercise",
 		"POST",
-		"/exercises/start/{id}",
+		"/start/exercises/{id}",
 		StartExercise,
 	},
 }

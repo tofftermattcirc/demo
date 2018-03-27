@@ -37,7 +37,7 @@
 			// Get the exercise's end time using the exercise id
 			$.ajax ({
 				type: "GET",
-				url: server_url + "/exercise_timeout/" + id,
+				url: server_url + "/exercises/" + id,
 			}).done(function(response) {
 				if (response) {
 					handleStartExercise(response);
@@ -63,7 +63,7 @@
 				}
 				else {
 					// Exercise is running, start the count-down timer
-					createCountdownTimer(due, $('#time_remaining'), $("#frame_div"));
+					createCountdownTimer(due, true,  $('#time_remaining'), $("#frame_div"));
 				}
 			}
 			else { // Exercise has not started yet
@@ -77,7 +77,7 @@
 			$('#start_button').hide();
 			$.ajax ({
 				type: "POST",
-				url: server_url + "/start_exercise/" + id,
+				url: server_url + "/start/exercises/" + id,
 			}).done(function(response) {
 				handleStartExercise(response);
 				/*var due = response["due"];
