@@ -36,4 +36,10 @@ var routes = Routes{
 		"/exercises/start/{id}",
 		StartExercise,
 	},
+	Route{
+		"CompleteExercise",
+		"GET",
+		"/exercises/complete/{id}",
+		CompleteExercise,
+	},
 }
