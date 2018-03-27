@@ -121,7 +121,8 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func CompleteExercise(w http.ResponseWriter, r *http.Request) {
-        //TODO: not sure what needs to be done to complete the exercise.
+	// When this function is called it needs to mark the exercise as completed.
+        //TODO: not sure what needs to be done to do this.
 	//NOTE (BZ): Attempting to base this off StartExercise above.  This may not be 
 	// the correct thing to do.
 	vars := mux.Vars(r)
@@ -133,7 +134,7 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	exc := RepiGetExercise(exerciseId)  //No idea what this line does [bz]
 	// Error checking to find id
 	if exc.Id > 0 {
-
+	    // the exercise was found.  Now mark it complete.  [bz] need to figure out how...
 	}
 
 	// 404 if id not found
