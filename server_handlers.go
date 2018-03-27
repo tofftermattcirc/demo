@@ -136,7 +136,19 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	// Error checking to find id
 	if exc.Id > 0 {
 	    	// the exercise was found.  Now mark it complete.  [bz] need to figure out how...
-		
+		// basing this code on the StartExercise function above this code.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		if !exc.IsCompleted {
+			exc.IsCompleted = true;
+			exc.Completed = time.Now().Local().Add(time.Duration(exc.Delta) * time.Minute);
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset+UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(exec); err != nil {
+			panic(err)
+		}
+		return
     	}
 
 
