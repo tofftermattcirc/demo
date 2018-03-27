@@ -131,11 +131,14 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
 		panic(err)
 	}
-	exc := RepiGetExercise(exerciseId)  //No idea what this line does [bz]
+	// get the exercise from the repository
+	exc := RepoGetExercise(exerciseId)  
 	// Error checking to find id
 	if exc.Id > 0 {
-	    // the exercise was found.  Now mark it complete.  [bz] need to figure out how...
-	}
+	    	// the exercise was found.  Now mark it complete.  [bz] need to figure out how...
+		
+    	}
+
 
 	// 404 if id not found
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
