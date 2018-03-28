@@ -119,7 +119,7 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*func CompleteExercise(w http.ResponseWriter, r *http.Request) {
+func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	// When this function is called it needs to mark the exercise as completed.
 	//TODO: not sure what needs to be done to do this.
 	//NOTE (BZ): Attempting to base this off StartExercise above.  This may not be
@@ -144,7 +144,7 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json; charset+UTF-8")
 		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(exec); err != nil {
+		if err := json.NewEncoder(w).Encode(exc); err != nil {
 			panic(err)
 		}
 		return
@@ -152,8 +152,8 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 
 	// 404 if id not found
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(Http.StatusNotFound)
+	w.WriteHeader(http.StatusNotFound)
 	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
 		panic(err)
 	}
-}*/
+}
