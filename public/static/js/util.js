@@ -1,5 +1,3 @@
-var server_url = "http://localhost:8080";
-
 var endTime = undefined;
 var timer = undefined;
 function createCountdownTimer(endTime, started, textDiv, iframe, alertExpired) {

@@ -37,7 +37,7 @@
 			// Get the exercise's end time using the exercise id
 			$.ajax ({
 				type: "GET",
-				url: server_url + "/exercises/" + id,
+				url: "/exercises/" + id,
 			}).done(function(response) {
 				if (response) {
 					handleStartExercise(response);
