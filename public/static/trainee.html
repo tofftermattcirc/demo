@@ -5,7 +5,7 @@
 	<body>
 		<div>
 			<div style="position:fixed;left:0;top:0" id="frame_div">
-				<iframe src="http://34.217.107.92:8080/guacamole/#/" width="1280" height="1024"></iframe>
+				<iframe src="http://52.88.233.58:8080/guacamole/#/" width="1280" height="1024"></iframe>
 			</div>
 			<div class="page-wrapper" style="position:fixed;left:1300;top:0;height:1024">
 				<section class="intro">
@@ -63,7 +63,7 @@
 				}
 				else {
 					// Exercise is running, start the count-down timer
-					createCountdownTimer(due, true,  $('#time_remaining'), $("#frame_div"));
+					createCountdownTimer(due, true,  $('#time_remaining'), $("#frame_div"), true);
 				}
 			}
 			else { // Exercise has not started yet
