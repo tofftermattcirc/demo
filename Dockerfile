@@ -1,13 +1,22 @@
-FROM golang:1.10
+FROM golang:1.10-alpine
 
-ADD . /go/src/github.com/circadence/poc-server
-WORKDIR /go/src/github.com/circadence/poc-server/
+ADD . /go/src/circadence/demo
+WORKDIR /go/src/circadence/demo
 
+RUN apk add --update git 
 RUN go get -u github.com/golang/dep/cmd/dep
 
 COPY . .
-RUN dep ensure
-RUN go install github.com/circadence/poc-server
+RUN dep ensure -vendor-only
+#RUN go install /go/src/circadence/demo
+RUN go install 
 
-ENTRYPOINT /go/bin/server
-EXPOSE 8080
+
+#FROM alpine:latest
+#RUN apk --no-cache add ca-certificates
+#WORKDIR /root/
+#COPY --from=0 /go/src/circadence/demo .
+
+EXPOSE 9000
+
+CMD ["demo"]
