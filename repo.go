@@ -22,6 +22,7 @@ func RepoGetExercise(id int) Exercise {
 func RepoAddExercise(ex Exercise) Exercise {
 	currentId += 1
 	ex.Id = currentId
+	ex.IsStarted = false;
 	exercises = append(exercises, ex)
 	return ex
 }
@@ -34,4 +35,14 @@ func RepoDeleteExercise(id int) error {
 		}
 	}
 	return fmt.Errorf("Could not get Exercise with id of %d to delete", id)
+}
+
+func RepoUpdateExercise(exercise Exercise) bool {
+	for index, ex := range exercises {
+		if ex.Id == exercise.Id {
+			exercises[index] = exercise
+			return true
+		}
+	}
+	return false
 }
