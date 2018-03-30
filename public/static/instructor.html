@@ -2,9 +2,9 @@
 	<head>
 		<link rel="stylesheet" href="css/zen_style.css">
 	</head>
-	<body>
+	<body background="img/dusk.jpg">
 		<div class="page-wrapper">
-			<table>
+			<table style="position: absolute;left: 100px;top: 100px;">
 				<tr>
 					<td>
 						<select id="exercise">
@@ -47,12 +47,12 @@
 				var id = this.value;
 				$.ajax ({
 					type: "GET",
-					url: server_url + "/exercises/" + id,
+					url: "/exercises/" + id,
 				}).done(function(response) {
 					if (response) {
 						var due = response["due"];
-						createCountdownTimer(due, response["started"], $('#time_remaining'), null);
-						$('#trainee_link').text(server_url + "/static/trainee.html?id=" + id);
+						createCountdownTimer(due, response["started"], $('#time_remaining'), null, false);
+						$('#trainee_link').text("http://" + location.host + "/static/trainee.html?id=" + id);
 						$('#exercise_is_live').show();
 					}
 				}).fail(function() {
@@ -83,7 +83,7 @@
 					});
 					$.ajax ({
 						type: "POST",
-						url: server_url + "/exercises",
+						url: "/exercises",
 						data: json,
 						contentType: "application/json",
 					}).done(function(response) {
@@ -101,7 +101,7 @@
 		function populateRunningExercises() {
 			$.ajax ({
 				type: "GET",
-				url: server_url + "/exercises",
+				url: "/exercises",
 			}).done(function(response) {
 				var select = $("#running_exercises");
 				select.empty();
