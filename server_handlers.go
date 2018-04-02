@@ -160,57 +160,31 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 
 func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	// When this function is called it Authenticates the user.
-	// Will be given:
-	//    * userID [String]
-	//    * password [String]
-	// Will return JSON of:
-	//    * UserName [String]
-	//    * Password [String]  - Unencrypted for POC.
-	//    * Validity [boolean]
+	// This is based off the 'AddExercise' above
+	// Intended curl usage:
+	//    curl -H "Content-Type: application/json" -d '{"name":"User Name"}' http://localhost:8080/exercises
 	// @TODO: For POC this is using unecrypted info this should be
 	// changed later
-	vars := mux.Vars(r)
-
-	// validate inputs
-	// validate UserID
-	var userID int
-	var err error
-	if userID, err = strconv.Atoi(vars["userID"]); err != nil {
+	var user User
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
 		panic(err)
 	}
 
-	var password string
-	// validate password
-	// currently just validates that string is not of length zero.
-	if len(password) == 0 {
-		panic(err)
-	}
-
-	//Here
-	// Will return JSON of:
-	//    * UserName [String]
-	//    * Password [String]  - Unencrypted for POC.
-	//    * Validity [boolean]
-
-	// get the user from the repository
-	usr := ReopAuthenticateUser(userID)
-	// Error checking to find id
-
-	if usr.Id > 0 {
-		// the user was found.  So return the expected JSON object described above.
-		// basing this code on the StartExercise function above this code.
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(usr); err != nil {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if err := json.Unmarshal(body, &user); err != nil {
+		w.WriteHeader(422) // unprocessable entity
+		if err := json.NewEncoder(w).Encode(err); err != nil {
 			panic(err)
 		}
-		return
 	}
 
-	// 404 if id not found
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusNotFound)
-	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
+	e := ReopAuthenticateUser(user)
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(e); err != nil {
 		panic(err)
 	}
 }

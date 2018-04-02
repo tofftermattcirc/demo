@@ -49,15 +49,16 @@ func RepoUpdateExercise(exercise Exercise) bool {
 }
 
 /**
-Function to authenticate user by id
+Function to authenticate user by User Object
+// TODO: for POC acts as a get user command.
 */
 //TODO: add lock
-func ReopAuthenticateUser(id int) User {
+func ReopAuthenticateUser(requestedUser User) User {
 	for _, usr := range users {
-		if usr.Id == id {
+		if usr.Id == requestedUser.Id {
 			return usr
 		}
 	}
-	// return empty Exercise if not found
+	// return empty User if not found
 	return User{}
 }
