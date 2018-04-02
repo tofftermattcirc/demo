@@ -17,7 +17,7 @@ type Exercise struct {
 	// * NOTE - BZ * Not sure if this is the correct place to show an exercise
 	//               has been completed.  Seems like it should be a combo of
 	//               user id and exercise id.
-	IsCompleted bool `json:"iscompleted,omitempty"`
+	IsCompleted bool `json:"completed,omitempty"`
 	// The point in time when the exercise has been completed.
 	// * NOTE - BZ * Note sure if this should be a duration or time of day when finished
 	CompletedTime time.Time `json:"completedtime,omitempty"`
@@ -26,8 +26,9 @@ type Exercise struct {
 type Exercises []Exercise
 
 type User struct {
-	Id   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	Id      string `json:"id,omitempty"`
+	Name    string `json:"name"`
+	IsValid bool   `json:"valid,omitempty"`
 }
 
 type Users []User

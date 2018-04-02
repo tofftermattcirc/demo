@@ -1,8 +1,11 @@
 var endTime = undefined;
 var timer = undefined;
-function createCountdownTimer(endTime, started, textDiv, iframe, alertExpired) {
+function createCountdownTimer(endTime, started, textDiv, iframe, alertExpired, completed) {
 	if (endTime == -1 || !started) {
 		$('#time_remaining').text("Not Started");
+	}
+	else if (completed) {
+		$('#time_remaining').text("Completed");
 	}
 	else if (!timer) {
 		clearInterval(timer);

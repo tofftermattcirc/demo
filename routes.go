@@ -38,8 +38,8 @@ var routes = Routes{
 	},
 	Route{
 		"CompleteExercise",
-		"GET",
-		"/exercises/complete/{id}",
+		"POST",
+		"/complete/exercises/{id}",
 		CompleteExercise,
 	},
 	// Route for authentication of a user.

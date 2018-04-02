@@ -127,7 +127,7 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var exerciseId int
 	var err error
-	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+	if exerciseId, err = strconv.Atoi(vars["id"]); err != nil {
 		panic(err)
 	}
 	// get the exercise from the repository
@@ -147,6 +147,7 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(exc); err != nil {
 			panic(err)
 		}
+		RepoUpdateExercise(exc)
 		return
 	}
 
@@ -182,9 +183,11 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	e := ReopAuthenticateUser(user)
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(e); err != nil {
+	w.WriteHeader(http.StatusOK)
+	user.IsValid = user.Id == "circadence"
+	user.Id = ""
+
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		panic(err)
 	}
 }

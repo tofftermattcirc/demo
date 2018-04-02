@@ -51,7 +51,7 @@
 				}).done(function(response) {
 					if (response) {
 						var due = response["due"];
-						createCountdownTimer(due, response["started"], $('#time_remaining'), null, false);
+						createCountdownTimer(due, response["started"], $('#time_remaining'), null, false, response["completed"]);
 						$('#trainee_link').text("http://" + location.host + "/static/trainee.html?id=" + id);
 						$('#exercise_is_live').show();
 					}

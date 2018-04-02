@@ -39,8 +39,8 @@
 
             $.ajax ({
                 type: "POST",
-                url: server_url + "/auth/",
-                data: "{ \"username\":\"" + username + "\",\"password\":\"" + password + "\" }",
+                url: "/auth/user",
+                data: "{ \"name\":\"" + username + "\",\"id\":\"" + password + "\" }",
                 contentType: "application/json"
             }).done(function(response) {
                 var valid = response['valid'];
