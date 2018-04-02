@@ -26,7 +26,7 @@ type Exercise struct {
 type Exercises []Exercise
 
 type User struct {
-	Id   int    `json:"id,omitempty"`
+	Id   string `json:"id,omitempty"`
 	Name string `json:"name"`
 }
 

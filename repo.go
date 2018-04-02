@@ -54,11 +54,34 @@ Function to authenticate user by User Object
 */
 //TODO: add lock
 func ReopAuthenticateUser(requestedUser User) User {
-	for _, usr := range users {
-		if usr.Id == requestedUser.Id {
-			return usr
+	/*  Expected code post demo   */
+	//	for _, usr := range users {
+	//		if usr.Id == requestedUser.Id {
+	//			return usr
+	//		}
+	//	}
+	//	// return empty User if not found
+	//	return User{}
+	/* temp code that looks for user tofftermatt with password circadence */
+	// and returns an empty user if not found
+	emptyUser := User{}
+	tofftermatt := User{
+		Name: "tofftermatt",
+		Id:   "circadence"}
+
+	if requestedUser.Name == "tofftermatt" {
+		if requestedUser.Id == "circadence" {
+
+			// return valid tofftermatt user
+			return tofftermatt
 		}
+
+		// return invalid
+		// currently returns empty user if not found
+		return emptyUser
 	}
-	// return empty User if not found
-	return User{}
+
+	//  return invalid
+	// currently returns empty user if not found
+	return emptyUser
 }
