@@ -8,12 +8,12 @@ tar xvzf zeromq-4.2.2.tar.gz
 
 # Install dependency
 sudo apt-get update && \
-sudo apt-get install -y libtool pkg-config build-essential autoconf
-automake uuid-dev
+sudo apt-get install -y libtool pkg-config build-essential autoconf automake uuid-dev
 
 # Create make file
 cd zeromq-4.2.2
-./configure
+#configure
+./configure --libdir=/usr/local/lib64/ CC="gcc -m64" CFLAGS=" -fPIC"
 
 # Build and install(root permission only)
 sudo make install
