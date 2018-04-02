@@ -121,13 +121,13 @@ func StartExercise(w http.ResponseWriter, r *http.Request) {
 
 func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	// When this function is called it needs to mark the exercise as completed.
-	//TODO: not sure what needs to be done to do this.
-	//NOTE (BZ): Attempting to base this off StartExercise above.  This may not be
+	// TODO: not sure what needs to be done to do this.
+	// NOTE (BZ): Attempting to base this off StartExercise above.  This may not be
 	// the correct thing to do.
 	vars := mux.Vars(r)
 	var exerciseId int
 	var err error
-	if exerciseId, err = strconv.Atoi(vars["Id"]); err != nil {
+	if exerciseId, err = strconv.Atoi(vars["id"]); err != nil {
 		panic(err)
 	}
 	// get the exercise from the repository
@@ -147,6 +147,7 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(exc); err != nil {
 			panic(err)
 		}
+		RepoUpdateExercise(exc)
 		return
 	}
 
@@ -154,6 +155,39 @@ func CompleteExercise(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusNotFound)
 	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
+		panic(err)
+	}
+}
+
+func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
+	// When this function is called it Authenticates the user.
+	// This is based off the 'AddExercise' above
+	// Intended curl usage:
+	//    curl -H "Content-Type: application/json" -d '{"name":"User Name"}' http://localhost:8080/exercises
+	// @TODO: For POC this is using unecrypted info this should be
+	// changed later
+	var user User
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if err := json.Unmarshal(body, &user); err != nil {
+		w.WriteHeader(422) // unprocessable entity
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	user.IsValid = user.Id == "circadence"
+	user.Id = ""
+
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		panic(err)
 	}
 }

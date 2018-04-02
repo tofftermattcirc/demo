@@ -63,7 +63,7 @@
 				}
 				else {
 					// Exercise is running, start the count-down timer
-					createCountdownTimer(due, true,  $('#time_remaining'), $("#frame_div"), true);
+					createCountdownTimer(due, true,  $('#time_remaining'), $("#frame_div"), true, response["completed"]);
 				}
 			}
 			else { // Exercise has not started yet
@@ -77,7 +77,7 @@
 			$('#start_button').hide();
 			$.ajax ({
 				type: "POST",
-				url: server_url + "/start/exercises/" + id,
+				url: "/start/exercises/" + id,
 			}).done(function(response) {
 				handleStartExercise(response);
 				/*var due = response["due"];
