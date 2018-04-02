@@ -42,4 +42,17 @@ var routes = Routes{
 		"/exercises/complete/{id}",
 		CompleteExercise,
 	},
+	// Route for authentication of a user.
+	// Will return JSON of:
+	//    * UserName [String]
+	//    * Password [String]  - Unencrypted for POC.
+	//    * Validity [boolean]
+	// For POC this is using unecrypted info this should be
+	// changed later
+	Route{
+		"AuthenticateUser",
+		"POST",
+		"/auth/user/{userid}/password/{password}",
+		AuthenticateUser,
+	},
 }

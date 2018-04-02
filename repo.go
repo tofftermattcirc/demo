@@ -7,6 +7,7 @@ import (
 var currentId int
 
 var exercises Exercises
+var users Users
 
 func RepoGetExercise(id int) Exercise {
 	for _, ex := range exercises {
@@ -22,7 +23,7 @@ func RepoGetExercise(id int) Exercise {
 func RepoAddExercise(ex Exercise) Exercise {
 	currentId += 1
 	ex.Id = currentId
-	ex.IsStarted = false;
+	ex.IsStarted = false
 	exercises = append(exercises, ex)
 	return ex
 }
@@ -45,4 +46,18 @@ func RepoUpdateExercise(exercise Exercise) bool {
 		}
 	}
 	return false
+}
+
+/**
+Function to authenticate user by id
+*/
+//TODO: add lock
+func ReopAuthenticateUser(id int) User {
+	for _, usr := range users {
+		if usr.Id == id {
+			return usr
+		}
+	}
+	// return empty Exercise if not found
+	return User{}
 }
