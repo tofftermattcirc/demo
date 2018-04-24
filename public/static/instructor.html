@@ -2,9 +2,9 @@
 	<head>
 		<link rel="stylesheet" href="css/zen_style.css">
 	</head>
-	<body>
+	<body background="img/dusk.jpg">
 		<div class="page-wrapper">
-			<table>
+			<table style="position: absolute;left: 100px;top: 100px;">
 				<tr>
 					<td>
 						<select id="exercise">
@@ -13,13 +13,15 @@
 							<option>Here Be Dragons!</option>
 						</select>
 						<br/><br/>
-						&nbsp;Time Limit:&nbsp;<input type="number" id="time_limit" value="20" style="width:60px"></input>&nbsp;&nbsp;minutes
+						Name:&nbsp;<input id="exercise_name" value="" style="width:170px"></input>
+						<br/><br/>
+						Time Limit:&nbsp;<input type="number" id="time_limit" value="20" style="width:60px"></input>&nbsp;&nbsp;minutes
 						<br/><br/>
 						<button onclick="startButton()">Start</button>
 					</td>
 					<td style="padding:30px;">
 						Running Exercises:<br/>
-						<select id="running_exercises" style="width:150px;" multiple></select>
+						<select id="running_exercises" style="width:300px;" multiple></select>
 						<div id="exercise_is_live" hidden="true">
 							<b>Trainee Link:</b>&nbsp;&nbsp;<span id="trainee_link"></span>&nbsp;&nbsp;<img src="img/copy.png" height="16px" width="16px" onclick="copyUrl()"/>
 							<br/>
@@ -45,46 +47,52 @@
 				var id = this.value;
 				$.ajax ({
 					type: "GET",
-					url: server_url + "/exercises/" + id,
+					url: "/exercises/" + id,
 				}).done(function(response) {
 					if (response) {
 						var due = response["due"];
-						createCountdownTimer(due, $('#time_remaining'), null);
-						$('#trainee_link').text(server_url + "/static/trainee.html?id=" + id);
+						createCountdownTimer(due, response["started"], $('#time_remaining'), null, false, response["completed"]);
+						$('#trainee_link').text("http://" + location.host + "/static/trainee.html?id=" + id);
 						$('#exercise_is_live').show();
 					}
 				}).fail(function() {
-					alert("Failed to create exercise.");
+					alert("Failed to get exercise.");
 				});
 			});
 		});
 	
 		function startButton() {
-			if ($('#exercise').val() == 'Here Be Dragons!') {
-				// This is a fun easter egg
-				$('#exercise_is_live').hide();
-				$('#hbd').html("<img src=\"http://fc08.deviantart.net/fs71/i/2010/202/1/6/Here_Be_Dragons_by_Lord_Psymon.jpg\"/>");
+			var name = $('#exercise_name').val().trim();
+			if (!name) {
+				alert("Please enter a name for this exercise");
 			}
 			else {
-				$('#hbd').empty();
+				if ($('#exercise').val() == 'Here Be Dragons!') {
+					// This is a fun easter egg
+					$('#exercise_is_live').hide();
+					$('#hbd').html("<img src=\"http://fc08.deviantart.net/fs71/i/2010/202/1/6/Here_Be_Dragons_by_Lord_Psymon.jpg\"/>");
+				}
+				else {
+					$('#hbd').empty();
 
-				submitExerciseRequest();
-			};
-		};
-		
-		// Request a new exercise. Will repopulate running exercises is successful
-		function submitExerciseRequest() {
-			var timeToComplete = $('#time_limit').val();
-			$.ajax ({
-				type: "POST",
-				url: server_url + "/exercises",
-				data: JSON.stringify({ "name": "New Exercise", "delta": timeToComplete }),
-				contentType: "application/json",
-			}).done(function(response) {
-				populateRunningExercises();
-			}).fail(function() {
-				alert("Failed to create exercise.");
-			});
+					// Request a new exercise. Will repopulate running exercises is successful
+					var timeToComplete = $('#time_limit').val();
+					var json = JSON.stringify({ 
+						"name": name, 
+						"delta": parseInt(timeToComplete)
+					});
+					$.ajax ({
+						type: "POST",
+						url: "/exercises",
+						data: json,
+						contentType: "application/json",
+					}).done(function(response) {
+						populateRunningExercises();
+					}).fail(function() {
+						alert("Failed to create exercise.");
+					});
+				};
+			}
 		};
 
 		// Request all running exercises
@@ -93,18 +101,18 @@
 		function populateRunningExercises() {
 			$.ajax ({
 				type: "GET",
-				url: server_url + "/exercises",
+				url: "/exercises",
 			}).done(function(response) {
 				var select = $("#running_exercises");
 				select.empty();
 				if (response) {
-					for (var i = 0; i < reponse.length; ++i) {
-						var id = reponse[i]["id"];
-						var name = reponse[i]["name"];
+					for (var i = 0; i < response.length; ++i) {
+						var id = response[i]["id"];
+						var name = response[i]["name"];
 						var text = "Not Started";
-						if (reponse[i]["started"])
+						if (response[i]["started"])
 						{
-							if (reponse[i]["due"] - Date.now() <= 0) {
+							if (response[i]["due"] - Date.now() <= 0) {
 								text = "EXPIRED";
 							}
 							else {

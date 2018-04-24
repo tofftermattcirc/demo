@@ -33,7 +33,30 @@ var routes = Routes{
 	Route{
 		"StartExercise",
 		"POST",
-		"/exercises/start/{id}",
+		"/start/exercises/{id}",
 		StartExercise,
+	},
+	Route{
+		"CompleteExercise",
+		"POST",
+		"/complete/exercises/{id}",
+		CompleteExercise,
+	},
+	// Route for authentication of a user.
+	// Will return JSON of User object (see User struct in data.go):
+	//    * UserName [String]
+	//    * Password [String]  - Unencrypted for POC.
+	//    * Validity [boolean]
+	// For POC this is using unecrypted info this should be
+	// changed later
+	// For POC this will return as a valid
+	// authentication for the user/password
+	// combination of any userid
+	// and the password 'circadence'
+	Route{
+		"AuthenticateUser",
+		"POST",
+		"/auth/user",
+		AuthenticateUser,
 	},
 }

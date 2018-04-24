@@ -1,10 +1,11 @@
-var server_url = "http://localhost:8080";
-
 var endTime = undefined;
 var timer = undefined;
-function createCountdownTimer(endTime, textDiv, iframe) {
-	if (endTime == -1) {
+function createCountdownTimer(endTime, started, textDiv, iframe, alertExpired, completed) {
+	if (endTime == -1 || !started) {
 		$('#time_remaining').text("Not Started");
+	}
+	else if (completed) {
+		$('#time_remaining').text("Completed");
 	}
 	else if (!timer) {
 		clearInterval(timer);
@@ -43,7 +44,9 @@ function createCountdownTimer(endTime, textDiv, iframe) {
 					iframe.html('');
 				}
 				countDownText = "EXPIRED";
-				alert("Time's up!");
+				if (alertExpired) {
+					alert("Time's up!");
+				}
 			}
 			textDiv.text(countDownText);
 		}, 1500);

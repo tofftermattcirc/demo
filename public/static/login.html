@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="css/zen_style.css">
+	</head>
+    <body background="img/login.jpg">
+        <input id="username" size="16" style="position:absolute;left:435px;top:582px;font-size:32px;color:#ffffff;background-color:transparent;border:0;"></input>
+        <input id="password" type="password" size="16" style="position:absolute;left:435px;top:660px;font-size:32px;color:#ffffff;background-color:transparent;border:0;"></input>
+        <div style="width:154px;height:63px;position:absolute;left:590px;top:740px;" onclick="submit()"></div>
+    </body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/util.js"></script>
+    <script>
+        $(document).ready(function() {
+            document.getElementById('username').onkeydown = function(event) {
+                if (event.keyCode == 13) {
+                    submit();
+                }
+            }
+            document.getElementById('password').onkeydown = function(event) {
+                if (event.keyCode == 13) {
+                    submit();
+                }
+            }
+        });
+
+        function submit() {
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            if (!username || !(username = username.trim())) {
+                alert("Please enter a username");
+                return;
+            }
+            
+            if (!password) {
+                alert("Please enter a password");
+                return;
+            }
+
+            $.ajax ({
+                type: "POST",
+                url: "/auth/user",
+                data: "{ \"name\":\"" + username + "\",\"id\":\"" + password + "\" }",
+                contentType: "application/json"
+            }).done(function(response) {
+                var valid = response['valid'];
+                if (valid) {
+                    window.location.href = "/static/instructor.html";
+                }
+                else {
+                    alert("Username and/or password were incorrect.");
+                }
+            }).fail(function() {
+                alert("Error connecting to the server.");
+            });
+        }
+    </script>
+</html>
